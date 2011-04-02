@@ -5,8 +5,8 @@
 ''
 
 CON
-  cols          = 80 '128                               ' number of screen columns
-  rows          = 40 '64                                ' number of screen rows
+  cols          = 80'128                                   ' number of screen columns
+  rows          = 40'64                                    ' number of screen rows
   chars         = rows*cols                             ' number of screen characters
   esc           = $CB                                   ' keyboard esc char
   rowsnow       = 36                                    ' adjusted for split screen effect
@@ -123,16 +123,16 @@ PUB cls(c,screencolor,pcport,ascii,CR) | i,x,y
   invs := inverse
   clrbtm(TURQUOISE)
   longfill(@screen, $20202020, chars/4)
+
   xloc := 0
-  yloc :=0
-  loc  := xloc + yloc*cols
-  repeat 80
-     out(32)
-  xloc := 0
-  yloc :=36
+  yloc := rows - 4
   loc  := xloc + yloc*cols
   inverse := 1
-  str(string("                                  PockeTerm V.905                               "))
+  repeat cols / 2 - 8
+    out(32)
+  str(string("PockeTerm V.905"))
+  repeat cols / 2 - 7
+    out(32)
   inverse := 0
   str(string("Baud Rate: "))
   i:= BR[c]
@@ -350,7 +350,7 @@ PUB color(ColorVal) | i
     colors[i] := $0000 + ColorVal
 
 PUB clrbtm(ColorVal) | i
-   repeat i from 36 to rows - 1                         'was 35
+   repeat i from rows - 4 to rows - 1                         'was 35
     colors[i] := $0000 + ColorVal
 PUB rowcolor(ColorVal, row)
 '' reset row color to colorval
@@ -416,7 +416,7 @@ PUB scrollD | i,len,y,dest,source
     i := @screen
     dest := i + y
     source := dest + cols
-    len := (chars1-y-80)/4
+    len := (chars1-y-cols)/4
     longmove(source, dest, len)
     longfill(dest,$20202020, cols/4)
 
@@ -428,7 +428,7 @@ PUB scrollM  | i,y,dest,source,len
     i := @screen
     dest := i + y
     'len := (chars1-y)/4
-    len := (chars1-y-80)/4
+    len := (chars1-y-cols)/4
     source := dest + cols
     longmove(dest,source,len)
     
